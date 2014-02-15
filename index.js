@@ -5,6 +5,7 @@ module.exports = function(game, opts) {
 };
 
 module.exports.pluginInfo = {
+  clientOnly: true,
   loadAfter: [
     'voxel-health',           // provides health value
     'voxel-inventory-hotbar'  // optional, but looks better loading after
