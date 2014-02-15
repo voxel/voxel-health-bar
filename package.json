@@ -1,6 +1,6 @@
 {
   "name": "voxel-health-bar",
-  "description": "",
+  "description": "player health bar (voxel.js plugin)",
   "version": "0.0.1",
   "repository": {
     "type": "git",
