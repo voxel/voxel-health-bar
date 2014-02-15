@@ -5,7 +5,10 @@ module.exports = function(game, opts) {
 };
 
 module.exports.pluginInfo = {
-  loadAfter: ['voxel-health']
+  loadAfter: [
+    'voxel-health',           // provides health value
+    'voxel-inventory-hotbar'  // optional, but looks better loading after
+    ]
 };
 
 var cssPercentWidth = function(value, max) {
@@ -13,8 +16,16 @@ var cssPercentWidth = function(value, max) {
 }
 
 function HealthBarPlugin(game, opts) {
+  this.opts = opts || {};
+
   this.healthPlugin = game.plugins && game.plugins.get('voxel-health');
   if (!this.healthPlugin) throw new Error('voxel-health-bar requires voxel-health plugin');
+
+  this.enable();
+}
+
+HealthBarPlugin.prototype.enable = function() {
+  var opts = this.opts;
 
   var bar = document.createElement('div');
   bar.style.backgroundColor = opts.frontColor || 'darkgreen';
@@ -29,32 +40,29 @@ function HealthBarPlugin(game, opts) {
   inner.style.opacity = opts.opacity || '0.8';
   inner.appendChild(bar);
 
-  var outer = document.createElement('div');
-  outer.style.width = '100%';
-  outer.style.position = 'absolute';
-  outer.style.bottom = opts.bottom || '100px';
-  outer.style.visibility = 'hidden';
-  outer.appendChild(inner);
-  document.body.appendChild(outer);
+  var container = document.createElement('div');
+  container.setAttribute('id', 'voxel-health-bar');
+  container.style.width = '100%';
+  container.style.position = 'absolute';
+  container.style.bottom = opts.bottom || '100px';
+  container.appendChild(inner);
+  document.body.appendChild(container);
 
   this.bar = bar;
-  this.container = outer;
-
-  this.enable();
-}
-
-HealthBarPlugin.prototype.enable = function() {
-  this.container.style.visibility = '';
+  this.container = container;
 
   this.healthPlugin.on('health', this.onHealth = this.update.bind(this));
 };
 
 HealthBarPlugin.prototype.disable = function() {
-  this.container.style.visibility = 'hidden';
+  if (this.container) this.container.parentElement.removeChild(this.container);
+
+  delete this.bar;
+  delete this.container;
 
   this.healthPlugin.removeListener('health', this.onHealth);
 };
 
 HealthBarPlugin.prototype.update = function() {
-  this.bar.style.width = this.healthPlugin.percentage() + '%';
+  if (this.bar) this.bar.style.width = this.healthPlugin.percentage() + '%';
 };
