@@ -2,12 +2,15 @@
   "name": "voxel-health-bar",
   "description": "player health bar (voxel.js plugin)",
   "version": "0.1.0",
+  "main": "health-bar.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:deathcap/voxel-health-bar.git"
   },
   "keywords": [
-    "voxel"
+    "voxel",
+    "plugin",
+    "health"
   ],
   "dependencies": {},
   "peerDependencies": {},
